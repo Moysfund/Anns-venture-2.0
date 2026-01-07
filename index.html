@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ANN'S VENTURES — Shop</title>
+
+  <!-- Google font (you can change) -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#ffd6e8" />
+</head>
+<body class="pink-bg">
+
+  <!-- Intro overlay -->
+  <div id="intro" class="intro">
+    <img src="assets/logo.png" alt="ANN'S VENTURES logo" class="intro-logo" />
+    <h1 class="brand-title">ANN'S VENTURES</h1>
+    <p class="tagline">Curated wears & natural drinks</p>
+  </div>
+
+  <!-- Main header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <img src="assets/logo.png" alt="logo" class="logo-small" />
+      <nav>
+        <a href="#wears">Wears</a>
+        <a href="#drinks">Drinks</a>
+        <a href="admin.html" class="admin-link">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Product sections -->
+  <main class="container">
+    <section id="wears" class="products-section">
+      <h2>Wears</h2>
+      <div id="wears-grid" class="grid"></div>
+    </section>
+
+    <section id="drinks" class="products-section">
+      <h2>Drinks</h2>
+      <div id="drinks-grid" class="grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> ANN'S VENTURES</p>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
