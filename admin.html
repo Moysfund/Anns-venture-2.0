@@ -2,66 +2,317 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>ANN'S VENTURES — Admin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --pink-1:#ffe4ef; --pink-2:#ffd6e8; --accent:#ff5f9a; --accent-2:#ff84b2;
+      --dark:#2a2a2a; --muted:#6b6b6b; --card:#fff; --shadow:0 14px 40px rgba(255,95,154,.18);
+      --radius:18px; --container:980px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Poppins',sans-serif;color:var(--dark);
+      background:linear-gradient(180deg,#fff,var(--pink-2) 50%,#fff)}
+    .container{max-width:var(--container);margin:0 auto;padding:20px}
+
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
+    .card{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:24px;width:100%;max-width:840px}
+    .logo{height:54px;border-radius:14px;border:5px solid var(--pink-2)}
+    .title{font-family:'Playfair Display',serif;color:#7a2a56;margin:8px 0 2px}
+    .muted{color:var(--muted)}
+
+    /* Forms */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .grid-1{display:grid;grid-template-columns:1fr;gap:12px}
+    label{font-size:13px;color:#7a2a56;font-weight:600}
+    input,select,button{font-family:inherit}
+    input[type="text"],input[type="password"],input[type="number"],select{
+      width:100%;padding:11px;border-radius:12px;border:1px solid #f1c1d7;background:#fff
+    }
+    .btn{padding:11px 14px;border:none;border-radius:12px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:600;cursor:pointer}
+    .btn.ghost{background:#fff;color:#7a2a56;border:1px solid #f3a6c6}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+
+    .list{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+    .item{display:flex;gap:12px;align-items:center;border:1px solid #f4c2d8;border-radius:14px;padding:10px;background:#fff}
+    .item img{width:72px;height:72px;border-radius:12px;object-fit:cover}
+    .item .meta{flex:1}
+    .pill{background:linear-gradient(90deg,#fff,var(--pink-1));border:1px solid #f3a6c6;border-radius:999px;padding:4px 10px;font-size:12px;color:#8b3b64}
+    .price{font-weight:700;color:var(--accent)}
+
+    .preview{margin-top:8px}
+    .preview img{max-width:160px;border-radius:12px;border:1px solid #f6cfe0}
+
+    @media (max-width:740px){ .grid-2{grid-template-columns:1fr} .row{flex-direction:column} }
+  </style>
 </head>
-<body class="pink-bg">
-
-  <div class="admin-container container">
-    <div class="admin-card">
-      <img src="assets/logo.png" alt="logo" class="logo-small center" />
-      <h2>Admin Login</h2>
-
-      <form id="login-form" class="form">
-        <label>Username
-          <input id="username" type="text" required placeholder="admin" />
-        </label>
-        <label>Password
-          <input id="password" type="password" required placeholder="••••••" />
-        </label>
-        <button type="submit" class="btn">Sign in</button>
-      </form>
-
-      <div id="admin-area" class="hidden">
-        <h3>Product Manager</h3>
-
-        <form id="product-form" class="form">
-          <label>Title <input id="p-title" required /></label>
-          <label>Category
-            <select id="p-category">
-              <option value="wear">Wear</option>
-              <option value="drink">Drink</option>
-            </select>
-          </label>
-          <label>Price (NGN) <input id="p-price" type="number" min="0" step="0.01" required /></label>
-          <label>Image <input id="p-image" type="file" accept="image/*" /></label>
-
-          <div id="preview-area" class="preview-area hidden">
-            <p><strong>Preview</strong></p>
-            <img id="preview-img" alt="preview" />
-          </div>
-
-          <div class="form-row">
-            <button id="save-product" class="btn">Save Product</button>
-            <button id="clear-form" type="button" class="btn ghost">Clear</button>
-          </div>
-        </form>
-
-        <h4>Existing Products</h4>
-        <div id="product-list" class="product-list"></div>
-
-        <div class="form-row">
-          <button id="logout" class="btn ghost">Logout</button>
-          <button id="export-data" class="btn ghost">Export JSON</button>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <img src="assets/logo.png" alt="logo" class="logo" />
+        <div>
+          <div class="title">Admin — Ann’s Ventures</div>
+          <div class="muted">Secure login • Add, edit, delete products • Image uploads with preview</div>
         </div>
       </div>
 
-      <p class="small muted">Admin demo: default username <strong>admin</strong>. Set password on first login.</p>
+      <!-- Login -->
+      <section id="login-section">
+        <div class="grid-2">
+          <div class="grid-1">
+            <label>Username</label>
+            <input id="username" type="text" placeholder="admin" />
+          </div>
+          <div class="grid-1">
+            <label>Password</label>
+            <input id="password" type="password" placeholder="••••••••" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <button id="loginBtn" class="btn">Sign in</button>
+          <button id="setPassBtn" class="btn ghost" title="Set or change password">Set/Change password</button>
+        </div>
+        <p class="muted" style="margin-top:8px">Default user: <strong>admin</strong>. If first time, click “Set/Change password”.</p>
+      </section>
+
+      <!-- Admin area -->
+      <section id="admin-section" style="display:none">
+        <div class="row" style="justify-content:space-between">
+          <div class="title" style="margin:0">Product manager</div>
+          <div class="row">
+            <button id="exportBtn" class="btn ghost">Export JSON</button>
+            <button id="logoutBtn" class="btn ghost">Logout</button>
+          </div>
+        </div>
+
+        <!-- Product form -->
+        <div class="grid-2" style="margin-top:12px">
+          <div class="grid-1">
+            <label>Title</label>
+            <input id="pTitle" type="text" placeholder="e.g., Floral midi dress" />
+          </div>
+          <div class="grid-1">
+            <label>Category</label>
+            <select id="pCategory">
+              <option value="wear">Wear</option>
+              <option value="drink">Drink</option>
+            </select>
+          </div>
+          <div class="grid-1">
+            <label>Price (NGN)</label>
+            <input id="pPrice" type="number" min="0" step="0.01" placeholder="5000" />
+          </div>
+          <div class="grid-1">
+            <label>Image</label>
+            <input id="pImage" type="file" accept="image/*" />
+          </div>
+        </div>
+
+        <div id="preview" class="preview" style="display:none">
+          <label>Preview</label>
+          <div><img id="previewImg" alt="preview" /></div>
+        </div>
+
+        <div class="row" style="margin-top:12px">
+          <button id="saveBtn" class="btn">Save product</button>
+          <button id="clearBtn" class="btn ghost" type="button">Clear</button>
+        </div>
+
+        <!-- Existing products -->
+        <div class="list" id="list"></div>
+      </section>
     </div>
   </div>
 
-  <script src="admin.js"></script>
+  <script>
+    // Keys
+    const PRODUCTS_KEY = 'av_products';
+    const PASS_KEY = 'av_admin_pass_hash';
+    const USERNAME = 'admin';
+
+    // Elements
+    const loginSection = document.getElementById('login-section');
+    const adminSection = document.getElementById('admin-section');
+    const usernameEl = document.getElementById('username');
+    const passwordEl = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const setPassBtn = document.getElementById('setPassBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const exportBtn = document.getElementById('exportBtn');
+
+    const pTitle = document.getElementById('pTitle');
+    const pCategory = document.getElementById('pCategory');
+    const pPrice = document.getElementById('pPrice');
+    const pImage = document.getElementById('pImage');
+    const preview = document.getElementById('preview');
+    const previewImg = document.getElementById('previewImg');
+    const saveBtn = document.getElementById('saveBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const list = document.getElementById('list');
+
+    let editingId = null;
+    let currentImageData = null;
+
+    // Helpers
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function loadProducts(){ try { return JSON.parse(localStorage.getItem(PRODUCTS_KEY) || '[]'); } catch(e){ return []; } }
+    function saveProducts(arr){ localStorage.setItem(PRODUCTS_KEY, JSON.stringify(arr)); }
+
+    async function sha256Hex(message){
+      const msgUint8 = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    // Password initialize tip
+    setPassBtn.addEventListener('click', async () => {
+      const user = (usernameEl.value || USERNAME).trim();
+      if(user !== USERNAME){ return alert('Username must be "admin"'); }
+      const newPass = prompt('Enter a new admin password:');
+      if(!newPass) return;
+      const h = await sha256Hex(newPass);
+      localStorage.setItem(PASS_KEY, h);
+      alert('Password saved. Use it to login.');
+    });
+
+    // Login
+    loginBtn.addEventListener('click', async () => {
+      const user = (usernameEl.value || '').trim();
+      const pass = passwordEl.value;
+      if(user !== USERNAME){ return alert('Invalid username'); }
+      const stored = localStorage.getItem(PASS_KEY);
+      if(!stored){ return alert('No password set. Click "Set/Change password" first.'); }
+      const attempt = await sha256Hex(pass);
+      if(attempt !== stored){ return alert('Invalid password'); }
+      loginSection.style.display = 'none';
+      adminSection.style.display = 'block';
+      renderList();
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      adminSection.style.display = 'none';
+      loginSection.style.display = 'block';
+      usernameEl.value = ''; passwordEl.value = '';
+    });
+
+    // Image preview
+    pImage.addEventListener('change', () => {
+      const file = pImage.files?.[0];
+      if(!file){ currentImageData = null; preview.style.display='none'; return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        currentImageData = reader.result;
+        previewImg.src = currentImageData;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Save product
+    saveBtn.addEventListener('click', () => {
+      const title = pTitle.value.trim();
+      const price = Number(pPrice.value);
+      const category = pCategory.value;
+      if(!title || !category || !price || price < 0){ return alert('Please fill all fields with valid values.'); }
+
+      const products = loadProducts();
+      const item = {
+        id: editingId || Date.now().toString(),
+        title, category, price: Number(price).toFixed(2),
+        image: currentImageData || null,
+        published: true,
+        createdAt: new Date().toISOString()
+      };
+
+      if(editingId){
+        const idx = products.findIndex(p => p.id === editingId);
+        if(idx >= 0) products[idx] = item;
+        editingId = null;
+      } else {
+        products.unshift(item);
+      }
+      saveProducts(products);
+      alert('Product saved');
+      clearForm();
+      renderList();
+    });
+
+    function clearForm(){
+      pTitle.value=''; pCategory.value='wear'; pPrice.value=''; pImage.value='';
+      currentImageData=null; preview.style.display='none';
+    }
+    clearBtn.addEventListener('click', clearForm);
+
+    // List render
+    function renderList(){
+      const products = loadProducts();
+      list.innerHTML = '';
+      if(!products.length){
+        list.innerHTML = '<div class="pill">No products yet. Add your first item above.</div>';
+        return;
+      }
+      products.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <img src="${p.image || 'assets/logo.png'}" alt="${escapeHtml(p.title)}">
+          <div class="meta">
+            <div><strong>${escapeHtml(p.title)}</strong> <span class="pill">${p.category}</span></div>
+            <div class="muted">₦${Number(p.price).toLocaleString('en-NG',{minimumFractionDigits:2})}</div>
+          </div>
+          <div class="row">
+            <button class="btn ghost" data-action="edit" data-id="${p.id}">Edit</button>
+            <button class="btn ghost" data-action="toggle" data-id="${p.id}">${p.published ? 'Unpublish' : 'Publish'}</button>
+            <button class="btn ghost" data-action="delete" data-id="${p.id}">Delete</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // Item actions
+    list.addEventListener('click', (e) => {
+      const btn = e.target.closest('button'); if(!btn) return;
+      const id = btn.dataset.id, action = btn.dataset.action;
+      const products = loadProducts();
+      const idx = products.findIndex(p => p.id === id); if(idx<0) return;
+
+      if(action === 'delete'){
+        if(confirm('Delete this product?')){
+          products.splice(idx,1);
+          saveProducts(products); renderList();
+        }
+      } else if(action === 'edit'){
+        const p = products[idx];
+        editingId = p.id;
+        pTitle.value = p.title; pCategory.value = p.category; pPrice.value = p.price;
+        if(p.image){ currentImageData = p.image; previewImg.src = p.image; preview.style.display='block'; }
+        else { currentImageData=null; preview.style.display='none'; }
+        window.scrollTo({top:0,behavior:'smooth'});
+      } else if(action === 'toggle'){
+        products[idx].published = !products[idx].published;
+        saveProducts(products); renderList();
+      }
+    });
+
+    // Export
+    exportBtn.addEventListener('click', () => {
+      const data = localStorage.getItem(PRODUCTS_KEY) || '[]';
+      const w = window.open('', '_blank');
+      w.document.write('<pre style="white-space:pre-wrap;font-family:monospace">'+
+        escapeHtml(data)+'</pre>');
+    });
+
+    // Guard: hide admin until logged in (prevents flash of content)
+    document.addEventListener('DOMContentLoaded', () => {
+      adminSection.style.display = 'none';
+      loginSection.style.display = 'block';
+    });
+  </script>
 </body>
 </html>
